@@ -3,13 +3,13 @@ import shutil
 from natsort import natsorted
 from reportlab.lib.pagesizes import A4, portrait
 from reportlab.pdfgen import canvas
-from pypdf import PdfWriter
 
+# 下载的文件夹
 cartoon_path = './test/'
-# temp_pdf = './temp.pdf'
+# 生成的pdf
 cartoon_pdf = './cartoon.pdf'
-all_img = []  # 存储的图像名路径
-merger = PdfWriter()
+# 存储所有图像路径
+all_img = []
 
 
 # 修改文件夹的名字，以便排序
@@ -25,7 +25,7 @@ def renamePre(path):
 
 
 # 找一个文件夹下所有的图片, 加入all_img
-def findAllFile(path):
+def findImg(path):
     filename = os.listdir(path)
     for file in filename:
         if file.endswith('.jpg'):
@@ -33,12 +33,22 @@ def findAllFile(path):
             all_img.append(fullname)
 
 
+# 找到所有的img文件
+def findAllImg(path):
+    folders = sorted(os.listdir(path))
+    folders = natsorted(folders)
+
+    # 自然排序后遍历加入all_img
+    for folder in folders:
+        current_path = path + folder + '/'
+        findImg(current_path)
+
+
 # 合并所有图片到pdf
 def imageToPdf(pdf_path):
     pages = 0
     (w, h) = portrait(A4)
     c = canvas.Canvas(pdf_path, pagesize=portrait(A4))
-    # findAllFile(img_path)
     for i in all_img:
         c.drawImage(i, 0, 0, w, h)
         c.showPage()
@@ -46,28 +56,11 @@ def imageToPdf(pdf_path):
     c.save()
 
 
-def mergeAllPdf(path, pdf_path):
-    folders = sorted(os.listdir(path))
-    folders = natsorted(folders)
-    # 自然排序后遍历加入all_img
-    for folder in folders:
-        current_path = path + folder + '/'
-        # imageToPdf(pdf_path)
-        findAllFile(current_path)
-        # merger.append(pdf_path)
-        # all_img.clear()
-
-    imageToPdf(pdf_path)
-    # merger.append(pdf_path)
-    # # 写入cartoon.pdf中
-    # merger.write(merge_pdf)
-    # merger.close()
-
-
 def main():
     # 因为test文件夹已经改好名字了，所有无需执行这个，第一次执行请取消下面的注释
     # renamePre(cartoon_path)
-    mergeAllPdf(cartoon_path, cartoon_pdf)
+    findAllImg(cartoon_path)
+    imageToPdf(cartoon_pdf)
 
 
 if __name__ == '__main__':
