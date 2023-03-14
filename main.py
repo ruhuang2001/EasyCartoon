@@ -57,8 +57,12 @@ def imageToPdf(pdf_path):
 
 
 def main():
-    # 因为test文件夹已经改好名字了，所有无需执行这个，第一次执行请取消下面的注释
-    # renamePre(cartoon_path)
+    filename = "cartoon.pdf"
+
+    if not os.path.isfile(filename):
+        open(filename, 'w').close()
+        renamePre(cartoon_path)
+
     findAllImg(cartoon_path)
     imageToPdf(cartoon_pdf)
 
