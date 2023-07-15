@@ -10,23 +10,26 @@ cartoon_path = './test/'
 cartoon_pdf = './cartoon.pdf'
 # 存储所有图像路径
 all_img = []
+# 下载漫画文件夹的前缀(例如：_第x话 的前缀是 "_第"，话数前的所有内容叫前缀)
+pre = "_第"
 
 
 # 修改文件夹的名字，以便排序
-def renamePre(path):
+def rename_folder(path):
     filename = os.listdir(path)
     for file in filename:
-        if file.startswith('_第'):
-            temp = file.split("_第", 1)[1]
-            new_file = temp.split("话", 1)[0]
+        if file.startswith(pre):
+            new_file = file.split(pre, 1)[1]
+            # new_file = temp.split("话", 1)[0]
             os.rename(path + '/' + file, path + '/' + new_file)
         else:
             shutil.rmtree(path + file + '/')
 
 
 # 找一个文件夹下所有的图片, 加入all_img
-def findImg(path):
+def find_img_path(path):
     filename = os.listdir(path)
+    print(filename)
     for file in filename:
         if file.endswith('.jpg'):
             fullname = os.path.join(path, file)
@@ -34,18 +37,18 @@ def findImg(path):
 
 
 # 找到所有的img文件
-def findAllImg(path):
+def find_all_img(path):
     folders = sorted(os.listdir(path))
     folders = natsorted(folders)
 
-    # 自然排序后遍历加入all_img
+    # 自然排序每话的文件夹名后依次遍历加入all_img
     for folder in folders:
         current_path = path + folder + '/'
-        findImg(current_path)
+        find_img_path(current_path)
 
 
 # 合并所有图片到pdf
-def imageToPdf(pdf_path):
+def make_pdf(pdf_path):
     pages = 0
     (w, h) = portrait(A4)
     c = canvas.Canvas(pdf_path, pagesize=portrait(A4))
@@ -59,12 +62,14 @@ def imageToPdf(pdf_path):
 def main():
     filename = "cartoon.pdf"
 
+    # 避免第二次执行rename_folder把全部文件夹删除
     if not os.path.isfile(filename):
         open(filename, 'w').close()
-        renamePre(cartoon_path)
+        rename_folder(cartoon_path)
 
-    findAllImg(cartoon_path)
-    imageToPdf(cartoon_pdf)
+    find_all_img(cartoon_path)
+    # print(all_img)
+    make_pdf(cartoon_pdf)
 
 
 if __name__ == '__main__':
