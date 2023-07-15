@@ -17,7 +17,7 @@ git clone https://github.com/ruhuang2001/EasyCartoon.git
 或者直接点击右上角`Code`中`Download Zip`下载后解压
 
 ### 运行
-将所有漫画文件移至`test`文件夹下, 根据漫画文件夹话数名修改`main.py`中第14行`pre`变量的值
+将所有漫画文件移至`EasyCartoon`的`test`文件夹下（如果没有`test`文件夹自行创建一个）, 根据漫画文件夹名修改`main.py`中第14行`pre`变量的值
 
 ```python
 # 下载漫画文件夹的前缀(例如：_第x话 的前缀是 "_第"，话数前的所有内容叫前缀)
